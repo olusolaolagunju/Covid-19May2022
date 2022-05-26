@@ -1,7 +1,7 @@
 # Covid-19May2022
 Data Overview:
 The Covid-19 data was obtained from https://ourworldindata.org/covid-vaccinations 
-The data was split into two sheets; Covid-19 Cases/Deaths data and Vaccination data files
+The data was split into two sheets; Covid-19 Cases/Deaths data and Vaccination data files.
 Both files were uploaded into SQL Server for exploratory analysis. 
 
 Project Objective: 
