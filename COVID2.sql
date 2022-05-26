@@ -1,4 +1,6 @@
 
+--Querries used for Covid-19 Project
+
 
 SELECT *
 FROM CovidProject..Sheet1$
@@ -9,11 +11,6 @@ FROM CovidProject..CovidVaccination24$
 where new_vaccinations is not null
 order by location, date
 
-SELECT location, SUM(convert(bigint, new_vaccinations)
-)FROM CovidProject..CovidVaccination24$
-
-GROUP BY location
-order by location
 
 --COVID-19 Death Table Insights
 
@@ -35,12 +32,37 @@ WHERE location like '%Nigeria%'
 order by PercentCasesPerPopulation desc
 
 --CONTINENT INSIGHTS
---The countries total infection count
-SELECT location, population, SUM(total_cases) AS TotalCasesCount
+--TOTAL CASES ACROSS THE WORLD for Dashboard 1
+SELECT  SUM(new_cases) as TotalCases, SUM(cast(new_deaths as bigint)) as TotalDeath,
+(SUM(cast(new_deaths as bigint))/ SUM(new_cases))*100 as TotaldeathPercentage
+FROM CovidProject..Sheet1$
+WHERE continent IS NOT NULL
+--Group by date
+order by 1 DESC
+
+--The countries total infection count for Dashboard 1
+SELECT location, population, MAX(total_cases) AS HighestInfectionCount, 
+( MAX(total_cases)/population)*100 as PercentagePopulationInfected
 FROM CovidProject..Sheet1$
 WHERE Continent is not null
 GROUP BY location, population
 order by TotalCasesCount Desc
+
+--The countries total infection count  for Dashboard 1
+SELECT date, location, population, MAX(total_cases) AS HighestInfectionCount, 
+( MAX(total_cases)/population)*100 as PercentagePopulationInfected
+FROM CovidProject..Sheet1$
+WHERE Continent is not null
+and location like '%Kingdom'
+GROUP BY date, location, population
+order by date Desc
+
+--CONTINNETS total death coount for Dashboard 1
+SELECT continent, SUM(CONVERT(bigint, total_deaths)) AS TotaldeathsCount
+FROM CovidProject..Sheet1$
+WHERE Continent is not null
+GROUP BY continent
+order by TotaldeathsCount Desc
 
 --countries total death coount
 SELECT location, population, SUM(CONVERT(bigint, total_deaths)) AS TotaldeathsCount
@@ -48,6 +70,7 @@ FROM CovidProject..Sheet1$
 WHERE Continent is not null
 GROUP BY location, population
 order by TotaldeathsCount Desc
+
 
 --daily global covid-19 cases and death
 SELECT date, 
@@ -57,13 +80,6 @@ FROM CovidProject..Sheet1$
 WHERE Continent is not null
 Group by date
 order by date Desc
-
---total global covid19 cases and death 
-SELECT  
-SUM (total_cases)AS totalCases, SUM(CONVERT(bigint, total_deaths)) AS totaldeath,
-(SUM(CONVERT(bigint, total_deaths))/SUM (total_cases))*100 AS PercentDeathPercentage
-FROM CovidProject..Sheet1$
-WHERE Continent is not null
 
 
 
@@ -116,7 +132,7 @@ SELECT *
 FROM VaccinationData 
 
 
---Create a TEMP Table
+--Create a TEMP Table for Dashboard 2
 
 Drop Table if exists #VaccinationTable
 
